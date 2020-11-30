@@ -67,10 +67,21 @@ public class ConfigFileRoutes {
             }
         }
 
-        log.infof("Creating new client for %s", address);
         URL url = new URL(address);
+        int port = 80;
+        if (url.getPort() != -1) {
+            port = url.getPort();
+        } else {
+            if (address.startsWith("http")) {
+                port = 80;
+            } else if (address.startsWith("https")) {
+                port = 443;
+            }
+        }
+        log.infof("Creating new client for host=%s port=%s", url.getHost(), port);
+
         HttpClient client = vertx.createHttpClient(new HttpClientOptions()
-                .setDefaultPort(url.getPort())
+                .setDefaultPort(port)
                 .setDefaultHost(url.getHost())
         );
         clients.put(address, client);
