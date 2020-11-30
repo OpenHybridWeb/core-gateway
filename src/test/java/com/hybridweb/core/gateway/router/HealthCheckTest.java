@@ -6,24 +6,23 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
+/**
+ * Test of {@link HealthCheckRoutes}
+ */
 @QuarkusTest
 public class HealthCheckTest {
 
     @Test
     public void testLiveCheck() {
-        given()
-                .when().get("/_api/health/live")
-                .then()
-                .statusCode(200)
+        given().when().get("/_api/health/live")
+                .then().statusCode(200)
                 .body(is("live"));
     }
 
     @Test
     public void testReadyCheck() {
-        given()
-                .when().get("/_api/health/ready")
-                .then()
-                .statusCode(200)
+        given().when().get("/_api/health/ready")
+                .then().statusCode(200)
                 .body(is("ready"));
     }
 
