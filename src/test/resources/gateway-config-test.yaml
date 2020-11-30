@@ -1,0 +1,10 @@
+routes:
+# static content container
+  - context: /theme/*
+    url: http://localhost:8760
+  - context: /test-spa1/*
+    url: http://localhost:8760
+
+# 3party services
+  - context: /api/*
+    url: http://localhost:8770
