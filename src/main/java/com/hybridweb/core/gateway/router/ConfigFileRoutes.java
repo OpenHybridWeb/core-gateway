@@ -68,7 +68,7 @@ public class ConfigFileRoutes {
         }
 
         URL url = new URL(address);
-        int port = 80;
+        int port = -1;
         if (url.getPort() != -1) {
             port = url.getPort();
         } else {
@@ -89,7 +89,7 @@ public class ConfigFileRoutes {
     }
 
     protected void registerRoute(Router router, String routeContext, String address) throws MalformedURLException {
-        log.infof("Registering router. routeContext=%s url=%s", routeContext, address);
+        log.infof("Registering route. routeContext=%s url=%s", routeContext, address);
         final HttpClient client = getClient(address);
 
         router.route(routeContext).handler(sourceContext -> {
@@ -109,10 +109,14 @@ public class ConfigFileRoutes {
             targetRequest.headers().addAll(sourceRequest.headers());
             // copy request body and "fire" the target request when done
             sourceRequest.pipeTo(targetRequest, end -> targetRequest.end());
-        }).failureHandler(ctx -> {
-            log.error("Error on calling url=" + ctx.request().absoluteURI(), ctx.failure());
-            ctx.response().setStatusCode(502).end();
+        }).failureHandler(sourceContext -> {
+            log.error("Error on calling url=" + sourceContext.request().absoluteURI(), sourceContext.failure());
+            sourceContext.response().setStatusCode(502).end();
         });
+    }
+
+    public Map<String, HttpClient> getClients() {
+        return clients;
     }
 
     void closeClients(@Observes ShutdownEvent ev) {

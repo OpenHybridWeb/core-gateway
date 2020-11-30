@@ -1,23 +1,38 @@
 package com.hybridweb.core.gateway.router;
 
-import io.vertx.ext.web.Router;
-import org.jboss.logging.Logger;
+import io.quarkus.vertx.web.Route;
+import io.quarkus.vertx.web.RouteBase;
+import io.vertx.core.http.HttpMethod;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Health checks routes
  */
-@ApplicationScoped
+@RouteBase(path = "/_api/health", produces = "text/plain")
 public class HealthCheckRoutes {
 
-    private static final Logger log = Logger.getLogger(HealthCheckRoutes.class);
+    @Inject
+    ConfigFileRoutes configFileRoutes;
 
-    public void registerHealthChecks(@Observes Router router) {
-        log.info("Registering Health API routes under /_api/health");
-        router.get("/_api/health/live").handler(rc -> rc.response().end("live"));
-        router.get("/_api/health/ready").handler(rc -> rc.response().end("ready"));
+    @Route(path = "live", methods = HttpMethod.GET)
+    String live() {
+        return "live";
+    }
+
+    @Route(path = "ready", methods = HttpMethod.GET)
+    String ready() {
+        // consider analysis if gateway works OK.
+        return "ready";
+    }
+
+    @Route(path = "", methods = HttpMethod.GET, produces = "application/json")
+    Map<String, Object> info() {
+        Map<String, Object> info = new HashMap<>();
+        info.put("clients", configFileRoutes.getClients().keySet());
+        return info;
     }
 
 }
