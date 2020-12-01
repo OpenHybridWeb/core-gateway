@@ -38,7 +38,7 @@ public class ConfigFileRoutes {
     /**
      * Clients for routing. Key is target url and value is the client
      */
-    Map<String, HttpClient> clients;
+    Map<String, HttpClient> clients = new HashMap<>();
 
     public void registerServiceRoutes(@Observes Router router) throws FileNotFoundException, MalformedURLException {
         if (configPath.isEmpty()) {
@@ -51,8 +51,6 @@ public class ConfigFileRoutes {
         Map<String, Object> config = yaml.load(new FileInputStream(configFile));
 
         List<Map<String, String>> routes = (List<Map<String, String>>) config.get("routes");
-
-        clients = new HashMap<>(routes.size());
 
         for (Map<String, String> route : routes) {
             registerRoute(router, route.get("context"), route.get("url"));

@@ -7,18 +7,18 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.fast-jar -t quarkus/gateway-fast-jar .
+# docker build -f src/main/docker/Dockerfile.fast-jar -t openhybridweb/core-gateway-fast-jar .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/gateway-fast-jar
+# docker run -i --rm -v /Users/lkrzyzan/git/openHybridWeb/core-gateway/src/test/resources/gateway-config-test.yaml:/deployments/config/gateway-config.yaml -p 8080:8080 openhybridweb/core-gateway-fast-jar
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005) like this :  EXPOSE 8080 5050
 #
 # Then run the container using :
 #
-# docker run -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" quarkus/gateway-fast-jar
+# docker run -i --rm -p 8080:8080 -p 5005:5005 -e JAVA_ENABLE_DEBUG="true" openhybridweb/core-gateway-fast-jar
 #
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
@@ -44,6 +44,7 @@ RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
 
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV APP_GATEWAY_ROUTER_CONFIGPATH=/deployments/config/gateway-config.yaml
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 COPY --chown=1001 target/quarkus-app/lib/ /deployments/lib/
