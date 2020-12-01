@@ -70,3 +70,56 @@ Choose the preferred docker image style and follow instructions in [src/main/doc
 
 The config file is expected to be mounted to `/deployments/config/gateway-config.yaml` and is defined as `- v ` parameter.
 Don't forget to change to your local path.
+
+### Minikube
+
+```shell script
+minikube start --insecure-registry "10.0.0.0/24"
+```
+
+#### Enable local registry
+[Docs](https://minikube.sigs.k8s.io/docs/handbook/registry/#docker-on-macos)
+
+For Mac:
+```shell script
+eval $(minikube -p minikube docker-env)
+minikube addons enable registry
+```
+in a different window:
+```shell script
+docker run --rm -it --network=host alpine ash -c "apk add socat && socat TCP-LISTEN:5000,reuseaddr,fork TCP:$(minikube ip):5000"
+```
+
+#### Build
+
+```shell script
+mvn package
+docker build -f src/main/docker/Dockerfile.jvm -t openhybridweb/core-gateway-jvm .
+docker tag openhybridweb/core-gateway-jvm localhost:5000/core-gateway
+docker push localhost:5000/core-gateway
+```
+
+#### Deploy hello world backends
+
+```shell script
+kubectl create deployment hello-app1 --image=gcr.io/google-samples/hello-app:1.0
+kubectl expose deployment hello-app1 --type=NodePort --port=8080
+
+kubectl create deployment hello-app2 --image=gcr.io/google-samples/hello-app:2.0
+kubectl expose deployment hello-app2 --type=NodePort --port=8080
+```
+
+#### Deploy
+
+```shell script
+kubectl create secret generic core-gateway-config --from-file=src/main/k8s/core-gateway-config.yaml
+kubectl apply -f src/main/k8s/core-gateway.yaml
+```
+
+Tunnel router:
+```shell script
+minikube service core-gateway
+```
+
+hit one of hello app urls e.g. `http://127.0.0.1:53735/hello-app1/`
+

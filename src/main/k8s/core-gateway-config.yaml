@@ -1,0 +1,12 @@
+routes:
+# static content container
+  - context: /theme/*
+    url: http://core-static
+  - context: /test-spa1/*
+    url: http://core-static
+
+# 3party services
+  - context: /hello-app1/*
+    url: http://hello-app1:8080
+  - context: /hello-app2/*
+    url: http://hello-app2:8080
