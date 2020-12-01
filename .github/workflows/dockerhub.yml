@@ -32,6 +32,6 @@ jobs:
           context: .
           file: ./src/main/docker/Dockerfile.jvm
           push: true
-          tags: user/app:latest
+          tags: openhybridweb/core-gateway:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
