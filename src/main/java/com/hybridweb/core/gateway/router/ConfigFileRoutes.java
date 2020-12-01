@@ -57,9 +57,15 @@ public class ConfigFileRoutes {
         for (Map<String, String> route : routes) {
             registerRoute(router, route.get("context"), route.get("url"));
         }
-
     }
 
+    /**
+     * Get client resp. register new one
+     *
+     * @param address
+     * @return http client for gateway
+     * @throws MalformedURLException
+     */
     protected HttpClient getClient(String address) throws MalformedURLException {
         for (Map.Entry<String, HttpClient> entry : clients.entrySet()) {
             if (entry.getKey().equals(address)) {
@@ -80,6 +86,7 @@ public class ConfigFileRoutes {
         }
         log.infof("Creating new client for host=%s port=%s", url.getHost(), port);
 
+        // TODO: Add possibility to pass client defaults via JSON/YAML
         HttpClient client = vertx.createHttpClient(new HttpClientOptions()
                 .setDefaultPort(port)
                 .setDefaultHost(url.getHost())
@@ -95,24 +102,31 @@ public class ConfigFileRoutes {
         router.route(routeContext).handler(sourceContext -> {
             HttpServerRequest sourceRequest = sourceContext.request();
             String sourceUri = sourceRequest.uri();
+
+            // Create target request template
             HttpClientRequest targetRequest = client.request(sourceRequest.method(), sourceUri);
-
-            targetRequest.handler(targetResponse -> {
-                HttpServerResponse sourceResponse = sourceContext.response();
-                // copy headers from target response
-                sourceResponse.headers().addAll(targetResponse.headers());
-                sourceResponse.setStatusCode(targetResponse.statusCode());
-                // copy output
-                targetResponse.pipeTo(sourceResponse);
-            }).exceptionHandler(ex -> log.error("Error on calling target url=" + sourceUri, ex));
-
+            // copy headers from source to target
             targetRequest.headers().addAll(sourceRequest.headers());
-            // copy request body and "fire" the target request when done
+            // register the response and exception handler
+            targetRequest.handler(targetResponse -> copyTargetResponseToSource(targetResponse, sourceContext.response()))
+                    .exceptionHandler(ex -> log.error("Error on calling target url=" + sourceUri, ex));
+
+            // copy request body and "fire" the target request when copying is done
             sourceRequest.pipeTo(targetRequest, end -> targetRequest.end());
+
         }).failureHandler(sourceContext -> {
             log.error("Error on calling url=" + sourceContext.request().absoluteURI(), sourceContext.failure());
             sourceContext.response().setStatusCode(502).end();
         });
+    }
+
+    protected void copyTargetResponseToSource(HttpClientResponse targetResponse, HttpServerResponse sourceResponse) {
+        // copy headers from target response
+        sourceResponse.headers().addAll(targetResponse.headers());
+        // copy status code
+        sourceResponse.setStatusCode(targetResponse.statusCode());
+        // copy target output back to source response
+        targetResponse.pipeTo(sourceResponse);
     }
 
     public Map<String, HttpClient> getClients() {
