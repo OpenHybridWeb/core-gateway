@@ -11,7 +11,7 @@
 #
 # Then run the container using:
 #
-# docker run -i --rm -v /Users/lkrzyzan/git/openHybridWeb/core-gateway/src/test/resources/gateway-config-test.yaml:/deployments/config/gateway-config.yaml -p 8080:8080 openhybridweb/core-gateway-jvm
+# docker run -i --rm -v /Users/lkrzyzan/git/openHybridWeb/core-gateway/src/test/resources/gateway-config-test.yaml:/deployments/config/core-gateway-config.yaml -p 8080:8080 openhybridweb/core-gateway-jvm
 #
 # If you want to include the debug port into your docker image
 # you will have to expose the debug port (default 5005) like this :  EXPOSE 8080 5050
@@ -44,7 +44,7 @@ RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
 
 # Configure the JAVA_OPTIONS, you can add -XshowSettings:vm to also display the heap size.
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-ENV APP_GATEWAY_ROUTER_CONFIGPATH=/deployments/config/gateway-config.yaml
+ENV APP_GATEWAY_ROUTER_CONFIGPATH=/deployments/config/core-gateway-config.yaml
 
 COPY target/lib/* /deployments/lib/
 COPY target/*-runner.jar /deployments/app.jar

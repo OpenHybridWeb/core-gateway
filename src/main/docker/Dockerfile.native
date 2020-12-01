@@ -11,7 +11,7 @@
 #
 # Then run the container using:
 #
-# docker run -i --rm -v /Users/lkrzyzan/git/openHybridWeb/core-gateway/src/test/resources/gateway-config-test.yaml:/deployments/config/gateway-config.yaml -p 8080:8080 openhybridweb/core-gateway
+# docker run -i --rm -v /Users/lkrzyzan/git/openHybridWeb/core-gateway/src/test/resources/gateway-config-test.yaml:/deployments/config/core-gateway-config.yaml -p 8080:8080 openhybridweb/core-gateway
 #
 ###
 FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
@@ -21,7 +21,7 @@ RUN chown 1001 /work \
     && chown 1001:root /work
 COPY --chown=1001:root target/*-runner /work/application
 
-ENV APP_GATEWAY_ROUTER_CONFIGPATH=/deployments/config/gateway-config.yaml
+ENV APP_GATEWAY_ROUTER_CONFIGPATH=/deployments/config/core-gateway-config.yaml
 
 EXPOSE 8080
 USER 1001
