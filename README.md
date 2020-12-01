@@ -68,8 +68,8 @@ Choose the preferred docker image style and follow instructions in [src/main/doc
 2. [Docker Fast Jar JVM](src/main/docker/Dockerfile.fast-jar)
 3. [Docker Native](src/main/docker/Dockerfile.native)
 
-The config file is expected to be mounted to `/deployments/config/gateway-config.yaml` and is defined as `- v ` parameter.
-Don't forget to change to your local path.
+The config file path needs to be defined via `APP_GATEWAY_ROUTER_CONFIGPATH` variable and then 
+the config file mounted.
 
 ### Minikube
 
