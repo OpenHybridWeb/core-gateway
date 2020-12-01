@@ -1,4 +1,4 @@
-# core-gateway
+# OpenHybridWeb / core-gateway
 Core component for routing and security
 
 ## Built in API
@@ -60,9 +60,11 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 You can then execute your native executable with: `./target/gateway-1.0.0-SNAPSHOT-runner`
 
 
-### Local Docker
+### Docker
 
-Choose the preferred docker image style and follow instructions in [src/main/docker](src/main/docker) directory.
+Use docker from [Docker Hub](https://hub.docker.com/r/openhybridweb/core-gateway)
+
+or build by yourself - choose the preferred docker image style and follow instructions in [src/main/docker](src/main/docker) directory.
 
 1. [Docker JVM](src/main/docker/Dockerfile.jvm)
 2. [Docker Fast Jar JVM](src/main/docker/Dockerfile.fast-jar)
