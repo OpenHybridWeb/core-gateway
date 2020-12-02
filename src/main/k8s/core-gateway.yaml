@@ -38,14 +38,14 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             failureThreshold: 10
-            periodSeconds: 1
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: "/_api/health/ready"
               port: 8080
             initialDelaySeconds: 5
             failureThreshold: 5
-            periodSeconds: 1
+            periodSeconds: 5
           resources:
             requests:
               cpu: 100m
