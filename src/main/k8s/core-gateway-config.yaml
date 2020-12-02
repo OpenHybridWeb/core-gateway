@@ -1,9 +1,11 @@
 routes:
 # static content container
-  - context: /theme/*
-    url: http://core-static
-  - context: /test-spa1/*
-    url: http://core-static
+  - context: /example/*
+    url: http://core-staticcontent
+  - context: /jbossorg/*
+    url: http://core-staticcontent
+  - context: /netflix/*
+    url: http://core-staticcontent
 
 # 3party services
   - context: /hello-app1/*
