@@ -6,6 +6,8 @@ routes:
     url: http://core-staticcontent
   - context: /netflix/*
     url: http://core-staticcontent
+  - context: /netflix-old/*
+    url: http://core-staticcontent
 
 # 3party services
   - context: /hello-app1/*
