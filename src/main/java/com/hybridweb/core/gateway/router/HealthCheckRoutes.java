@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Health checks routes
  */
-@RouteBase(path = "/_api/health", produces = "text/plain")
+@RouteBase(path = "/_gateway/api/health", produces = "text/plain")
 public class HealthCheckRoutes {
 
     private static final Logger log = Logger.getLogger(HealthCheckRoutes.class);

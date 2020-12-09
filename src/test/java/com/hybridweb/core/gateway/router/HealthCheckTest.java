@@ -14,14 +14,14 @@ public class HealthCheckTest {
 
     @Test
     public void testLiveCheck() {
-        given().when().get("/_api/health/live")
+        given().when().get("/_gateway/api/health/live")
                 .then().statusCode(200)
                 .body(is("live"));
     }
 
     @Test
     public void testReadyCheck() {
-        given().when().get("/_api/health/ready")
+        given().when().get("/_gateway/api/health/ready")
                 .then().statusCode(200)
                 .body(is("ready"));
     }
