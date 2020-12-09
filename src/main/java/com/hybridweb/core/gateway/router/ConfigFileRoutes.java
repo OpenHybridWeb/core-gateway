@@ -53,7 +53,7 @@ public class ConfigFileRoutes {
         List<Map<String, String>> routes = (List<Map<String, String>>) config.get("routes");
 
         for (Map<String, String> route : routes) {
-            registerRoute(router, route.get("context"), route.get("url"));
+            registerRoute(router, route.get("context"), route.get("url"), route.get("targetContext"));
         }
     }
 
@@ -93,13 +93,17 @@ public class ConfigFileRoutes {
         return client;
     }
 
-    protected void registerRoute(Router router, String routeContext, String address) throws MalformedURLException {
+    protected void registerRoute(Router router, String routeContext, String address, String targetContext) throws MalformedURLException {
         log.infof("Registering route. routeContext=%s url=%s", routeContext, address);
         final HttpClient client = getClient(address);
 
         router.route(routeContext).handler(sourceContext -> {
             HttpServerRequest sourceRequest = sourceContext.request();
             String sourceUri = sourceRequest.uri();
+            if (targetContext != null) {
+                String routerPath = sourceContext.currentRoute().getPath();
+                sourceUri = sourceUri.replace(routerPath, targetContext);
+            }
 
             // Create target request template
             HttpClientRequest targetRequest = client.request(sourceRequest.method(), sourceUri);
@@ -107,7 +111,7 @@ public class ConfigFileRoutes {
             targetRequest.headers().addAll(sourceRequest.headers());
             // register the response and exception handler
             targetRequest.handler(targetResponse -> copyTargetResponseToSource(targetResponse, sourceContext.response()))
-                    .exceptionHandler(ex -> log.error("Error on calling target url=" + sourceUri, ex));
+                    .exceptionHandler(ex -> log.error("Error on calling target url", ex));
 
             // copy request body and "fire" the target request when copying is done
             sourceRequest.pipeTo(targetRequest, end -> targetRequest.end());

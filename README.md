@@ -14,15 +14,20 @@ Path to config is defined in `APP_GATEWAY_ROUTER_CONFIGPATH` env. variable
 
 ```yaml
 routes:
-# static content container
+  # static content container
   - context: /theme/*
     url: http://localhost:8760
   - context: /test-spa1/*
     url: http://localhost:8760
 
-# 3party services
+  # 3party services
   - context: /api/*
     url: http://localhost:8770
+
+  # root
+  - context: /*
+    targetContext: /_root/
+    url: http://localhost:8760
 ```
 
 ## How to run

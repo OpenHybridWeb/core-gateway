@@ -27,8 +27,11 @@ public class ConfigFileRoutesTest {
         staticMockServer.getRouter().get("/theme/css/test.css").handler(ctx -> {
             ctx.response().setStatusCode(200).end("test css");
         });
-        staticMockServer.getRouter().get("/test-spa1/index.html").handler(ctx -> {
+        staticMockServer.getRouter().get("/spa1/index.html").handler(ctx -> {
             ctx.response().setStatusCode(200).end("<html></html>");
+        });
+        staticMockServer.getRouter().get("/_root/index.html").handler(ctx -> {
+            ctx.response().setStatusCode(200).end("<html><title>homepage</title></html>");
         });
         vertx.deployVerticle(staticMockServer);
 
@@ -71,6 +74,13 @@ public class ConfigFileRoutesTest {
         given().when().get("/test-spa1/index.html")
                 .then().statusCode(200)
                 .body(is("<html></html>"));
+    }
+
+    @Test
+    public void testRoot() {
+        given().when().get("/index.html")
+                .then().statusCode(200)
+                .body(is("<html><title>homepage</title></html>"));
     }
 
     @Test

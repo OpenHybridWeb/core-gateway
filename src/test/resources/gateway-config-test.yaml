@@ -3,8 +3,14 @@ routes:
   - context: /theme/*
     url: http://localhost:8760
   - context: /test-spa1/*
+    targetContext: /spa1/
     url: http://localhost:8760
 
 # 3party services
   - context: /api/*
     url: http://localhost:8770
+
+# root
+  - context: /*
+    targetContext: /_root/
+    url: http://localhost:8760
